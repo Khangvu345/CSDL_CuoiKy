@@ -9,16 +9,88 @@ def get_teacher_classes(db, ma_gv: str):
         """, (ma_gv,))
         return cursor.fetchall()
 
-def get_students_in_class(db, ma_loptc: str):
+def get_students_personal_in_class(db, ma_loptc: str):
     with db.cursor() as cursor:
         cursor.execute("""
-            SELECT sv.MaSV, sv.HoTen, bd.DiemChuyenCan, bd.DiemGiuaKy, bd.DiemCuoiKy,
-                   bd.DiemThucHanh, bd.DiemTongKetHe10, bd.DiemChu, bd.TrangThaiQuaMon
+            SELECT sv.MaSV, sv.HoTen, sv.MaLopHC, sv.MaChuyenNganh, sv.NgaySinh, sv.GioiTinh, sv.Email
             FROM BangDiem bd
             JOIN SinhVien sv ON bd.MaSV = sv.MaSV
             WHERE bd.MaLopTC = %s
         """, (ma_loptc,))
         return cursor.fetchall()
+
+def get_students_grades_in_class(db, ma_loptc: str):
+    # Lấy hệ số
+    with db.cursor() as cursor:
+        cursor.execute("""
+            SELECT mh.HeSoChuyenCan, mh.HeSoGiuaKy, mh.HeSoCuoiKy, mh.HeSoThucHanh
+            FROM LopTC ltc JOIN MonHoc mh ON ltc.MaMH = mh.MaMH
+            WHERE ltc.MaLopTC = %s
+        """, (ma_loptc,))
+        coeffs = cursor.fetchone()
+        hs_cc = coeffs["HeSoChuyenCan"] or 0
+        hs_gk = coeffs["HeSoGiuaKy"] or 0
+        hs_ck = coeffs["HeSoCuoiKy"] or 0
+        hs_th = coeffs["HeSoThucHanh"] or 0
+        tong_he_so = hs_cc + hs_gk + hs_ck + hs_th
+
+        # Lấy toàn bộ sinh viên & điểm thành phần
+        cursor.execute("""
+            SELECT sv.MaSV, sv.HoTen,
+                   bd.DiemChuyenCan, bd.DiemGiuaKy, bd.DiemCuoiKy, bd.DiemThucHanh
+            FROM BangDiem bd
+            JOIN SinhVien sv ON bd.MaSV = sv.MaSV
+            WHERE bd.MaLopTC = %s
+        """, (ma_loptc,))
+        sv_list = cursor.fetchall()
+
+    results = []
+    for sv in sv_list:
+        diem_cc = sv["DiemChuyenCan"] or 0
+        diem_gk = sv["DiemGiuaKy"] or 0
+        diem_ck = sv["DiemCuoiKy"] or 0
+        diem_th = sv["DiemThucHanh"] or 0
+
+        if tong_he_so > 0:
+            diem_tong_ket_10 = round((diem_cc * hs_cc + diem_gk * hs_gk + diem_ck * hs_ck + diem_th * hs_th) / tong_he_so, 1)
+        else:
+            diem_tong_ket_10 = 0.0
+
+        # chuyển hệ 4, chữ, trạng thái
+        if diem_tong_ket_10 >= 9.0:
+            diem_chu, diem_4 = 'A+', 4.0
+        elif diem_tong_ket_10 >= 8.5:
+            diem_chu, diem_4 = 'A', 3.7
+        elif diem_tong_ket_10 >= 8.0:
+            diem_chu, diem_4 = 'B+', 3.5
+        elif diem_tong_ket_10 >= 7.0:
+            diem_chu, diem_4 = 'B', 3.0
+        elif diem_tong_ket_10 >= 6.5:
+            diem_chu, diem_4 = 'C+', 2.5
+        elif diem_tong_ket_10 >= 5.5:
+            diem_chu, diem_4 = 'C', 2.0
+        elif diem_tong_ket_10 >= 5.0:
+            diem_chu, diem_4 = 'D+', 1.5
+        elif diem_tong_ket_10 >= 4.0:
+            diem_chu, diem_4 = 'D', 1.0
+        else:
+            diem_chu, diem_4 = 'F', 0.0
+
+        trang_thai = 'Đạt' if diem_tong_ket_10 >= 4.0 else 'Trượt'
+
+        results.append({
+            "MaSV": sv["MaSV"],
+            "HoTen": sv["HoTen"],
+            "DiemChuyenCan": sv["DiemChuyenCan"],
+            "DiemGiuaKy": sv["DiemGiuaKy"],
+            "DiemCuoiKy": sv["DiemCuoiKy"],
+            "DiemThucHanh": sv["DiemThucHanh"],
+            "DiemTongKetHe10": diem_tong_ket_10,
+            "DiemTongKetHe4": diem_4,
+            "DiemChu": diem_chu,
+            "TrangThaiQuaMon": trang_thai
+        })
+    return results
 
 def update_student_grade(db, ma_loptc: str, ma_sv: str, diem_data: dict):
     """

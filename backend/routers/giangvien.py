@@ -9,17 +9,28 @@ router = APIRouter(prefix="/api/teacher", tags=["GiangVien"])
 def get_my_classes(userid: str = Query(...), db=Depends(get_db)):
     return giangvien_crud.get_teacher_classes(db, ma_gv=userid)
 
+@router.get("/class/{ma_loptc}/students-info")
+def get_students_info(ma_loptc: str, userid: str = Query(...), db=Depends(get_db)):
+    # Có thể kiểm tra quyền lớp ở đây nếu muốn
+    return giangvien_crud.get_students_personal_in_class(db, ma_loptc)
+
+@router.get("/class/{ma_loptc}/grades")
+def get_students_grades(ma_loptc: str, userid: str = Query(...), db=Depends(get_db)):
+    # Có thể kiểm tra quyền lớp
+    return giangvien_crud.get_students_grades_in_class(db, ma_loptc)
+
+
 @router.get("/class/{ma_loptc}/students", response_model=list[SinhVienTrongLopTC])
 def get_students(ma_loptc: str, userid: str = Query(...), db=Depends(get_db)):
-    # Optionally: kiểm tra xem lớp này có đúng là của gv không (để chống truy cập trái phép)
+    # Có thể kiểm tra xem lớp này có đúng là của gv không (để chống truy cập trái phép)
     return giangvien_crud.get_students_in_class(db, ma_loptc=ma_loptc)
 
 @router.post("/class/{ma_loptc}/student/{ma_sv}/grades")
 def update_grade(ma_loptc: str, ma_sv: str, diem: DiemUpdateRequest, userid: str = Query(...), db=Depends(get_db)):
-    # Optionally: kiểm tra quyền
+    # Có thể kiểm tra quyền
     return giangvien_crud.update_student_grade(db, ma_loptc, ma_sv, diem.dict())
 
 @router.delete("/class/{ma_loptc}/student/{ma_sv}/grades")
 def delete_grade(ma_loptc: str, ma_sv: str, userid: str = Query(...), db=Depends(get_db)):
-    # Optionally: kiểm tra quyền
+    # Có thể kiểm tra quyền
     return giangvien_crud.delete_student_grade(db, ma_loptc, ma_sv)
