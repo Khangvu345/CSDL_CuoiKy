@@ -56,3 +56,16 @@ class DiemTongKetKy(BaseModel):
     DiemTBKyChu: Optional[str]
     SoTCDatKy: Optional[int]
     XepLoaiHocLucKy: Optional[str]
+
+class SinhVienDetails(BaseModel):
+    MaSV: str
+    HoTen: str
+    MaLopHC: Optional[str]
+    TenChuyenNganh: Optional[str]
+    Email: Optional[EmailStr]
+
+class TienDoHocTap(BaseModel):
+    DiemTBHe10: float
+    DiemTBHe4: float
+    TongTinChiDat: int
+    TongTinChi: int

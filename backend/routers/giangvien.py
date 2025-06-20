@@ -3,7 +3,7 @@ from crud import giangvien_crud
 from db import get_db
 from schemas.giangvien import LopTinChiGV, SinhVienTrongLopTC, DiemUpdateRequest
 
-router = APIRouter(prefix="/api/teacher", tags=["GiangVien"])
+router = APIRouter(tags=["GiangVien"])
 
 @router.get("/my-classes", response_model=list[LopTinChiGV])
 def get_my_classes(userid: str = Query(...), db=Depends(get_db)):

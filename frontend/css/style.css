@@ -1,0 +1,90 @@
+body {
+    background-color: #EAF4F8;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Segoe UI", Arial, sans-serif;
+    margin: 0;
+}
+
+.login-container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 32px rgba(20, 30, 38, 0.12), 0 1.5px 6px #73C6D950;
+    padding: 2.5rem 2.5rem 2rem 2.5rem;
+    width: 340px;
+    text-align: center;
+    border-top: 8px solid #73C6D9;
+}
+
+h2 {
+    color: #2D5F73;
+    margin-bottom: 2rem;
+    letter-spacing: 1px;
+}
+
+.input-group {
+    margin-bottom: 1.2rem;
+    text-align: left;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-group label {
+    align-self: flex-start;
+    margin-bottom: 0.5rem;
+    color: #2D5F73;
+    font-weight: 500;
+}
+
+.input-group input {
+    width: 92%;
+    padding: 0.7rem 1rem;
+    border: 1.5px solid #73C6D9;
+    border-radius: 6px;
+    outline: none;
+    background: #F5FBFD;
+    font-size: 1rem;
+    color: #141E26;
+    transition: border-color 0.25s;
+    margin-bottom: 0.2rem;
+    box-sizing: border-box;
+}
+
+.input-group input:focus {
+    border-color: #2D5F73;
+}
+
+button {
+    width: 92%;
+    padding: 0.85rem;
+    background: linear-gradient(90deg, #73C6D9, #55B3D9);
+    color: #fff;
+    font-size: 1.08rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    margin-top: 0.6rem;
+    box-shadow: 0 2px 8px #73C6D925;
+    transition: background 0.2s, box-shadow 0.2s;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+button:hover {
+    background: linear-gradient(90deg, #2D5F73, #73C6D9);
+    box-shadow: 0 4px 16px #73C6D933;
+}
+
+.error-message {
+    color: #d93025;
+    margin-top: 1rem;
+    min-height: 1.2em;
+    font-size: 0.97rem;
+}

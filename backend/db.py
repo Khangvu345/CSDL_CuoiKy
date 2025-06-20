@@ -6,10 +6,11 @@ def get_db():
         host="localhost",
         user="root",
         password="HocSQL@155@",
-        database="testCSDL",
+        database="csdl",
         cursorclass=pymysql.cursors.DictCursor,
         charset="utf8mb4",
         autocommit=True,
+        connect_timeout=5
     )
     try:
         yield connection

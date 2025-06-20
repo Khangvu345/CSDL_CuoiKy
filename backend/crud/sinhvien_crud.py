@@ -250,3 +250,14 @@ def get_student_overall_progress(db, ma_sv: str):
         "TongTinChi": tong_tinchi
     }
 
+def get_student_details(db, ma_sv: str):
+    with db.cursor() as cursor:
+        cursor.execute("""
+            SELECT 
+                sv.MaSV, sv.HoTen, sv.MaLopHC, cn.TenChuyenNganh, sv.Email
+            FROM SinhVien sv
+            LEFT JOIN ChuyenNganh cn ON sv.MaChuyenNganh = cn.MaChuyenNganh
+            WHERE sv.MaSV = %s
+        """, (ma_sv,))
+        return cursor.fetchone()
+

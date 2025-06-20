@@ -4,7 +4,7 @@ from schemas.user import UserLogin, User
 from crud import user_crud
 from db import get_db
 
-router = APIRouter(prefix="/api/user", tags=["User"])
+router = APIRouter(tags=["User"])
 
 @router.post("/login", response_model=User)
 def login_user(data: UserLogin, db=Depends(get_db)):

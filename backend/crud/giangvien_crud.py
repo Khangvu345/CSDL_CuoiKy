@@ -1,11 +1,17 @@
 def get_teacher_classes(db, ma_gv: str):
     with db.cursor() as cursor:
         cursor.execute("""
-            SELECT ltc.MaLopTC, mh.TenMH, kh.TenKy
+            SELECT 
+                ltc.MaLopTC, 
+                mh.TenMH, 
+                kh.TenKy,
+                kh.NamHoc,  
+                kh.MaKy     
             FROM LopTC ltc
             JOIN MonHoc mh ON ltc.MaMH = mh.MaMH
             JOIN KyHoc kh ON ltc.MaKy = kh.MaKy
             WHERE ltc.MaGV = %s
+            ORDER BY kh.NamHoc DESC, kh.MaKy DESC 
         """, (ma_gv,))
         return cursor.fetchall()
 

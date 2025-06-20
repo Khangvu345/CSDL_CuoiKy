@@ -28,6 +28,8 @@ class LopTinChiGV(BaseModel):
     MaLopTC: str
     TenMH: str
     TenKy: str
+    NamHoc: int
+    MaKy: str
 
 class SinhVienTrongLopTC(BaseModel):
     MaSV: str

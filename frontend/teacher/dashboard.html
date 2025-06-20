@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng điều khiển - Giảng viên</title>
+    <link rel="stylesheet" href="../css/style_dashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h2>Xin chào, <span id="teacherName">Giảng viên</span></h2>
+            <button class="logout-btn" id="logoutBtn">Đăng xuất</button>
+        </div>
+        <!-- Danh sách lớp tín chỉ phụ trách -->
+        <div class="section">
+            <h3>Danh sách lớp tín chỉ</h3>
+
+            <div id="filter-container" style="margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: center;">
+                <div>
+                    <label for="yearSelect" style="margin-right: 0.5rem;">Năm học:</label>
+                    <select id="yearSelect"></select>
+                </div>
+                <div>
+                    <label for="semesterSelect" style="margin-right: 0.5rem;">Học kỳ:</label>
+                    <select id="semesterSelect"></select>
+                </div>
+            </div>
+        </div>
+
+    <div class="class-list" id="classList"></div>
+</div>
+        <!-- Thông tin sinh viên lớp được chọn -->
+        <div class="section" id="studentsSection" style="display:none;">
+            <h3>Danh sách sinh viên lớp <span id="selectedClass"></span></h3>
+            <div id="studentsInfo" class="table-block"></div>
+        </div>
+        <!-- Bảng điểm sinh viên lớp được chọn -->
+        <div class="section" id="gradesSection" style="display:none;">
+            <h3>Bảng điểm lớp <span id="selectedClassGrade"></span></h3>
+            <div id="gradesInfo" class="table-block"></div>
+        </div>
+    </div>
+    <script src="../js/teacher.js"></script>
+</body>
+</html>

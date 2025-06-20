@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng điều khiển - Sinh viên</title>
+    <link rel="stylesheet" href="../css/style_dashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h2>Xin chào, <span id="studentName">Sinh viên</span></h2>
+            <button class="logout-btn" id="logoutBtn">Đăng xuất</button>
+        </div>
+        <!-- Thông tin tổng hợp -->
+        <div class="info-stat">
+            <div class="info-card" id="studentId">Mã SV: ...</div>
+            <div class="info-card" id="majorName">Chuyên ngành: ...</div>
+        </div>
+        <!-- Tiến độ tích lũy -->
+        <div class="section">
+            <h3>Tiến độ học tập</h3>
+            <div id="progress-info"><i>Đang tải...</i></div>
+        </div>
+        <!-- Bảng điểm theo kỳ -->
+        <div class="section">
+            <h3>Bảng điểm tổng kết kỳ học</h3>
+            <label for="semesterSelect">Chọn kỳ học:</label>
+            <select id="semesterSelect"></select>
+            <button class="main-btn" id="viewSemesterBtn">Xem</button>
+            <div id="semesterSummary" class="table-block"></div>
+        </div>
+        <!-- Chi tiết từng lớp tín chỉ -->
+        <div class="section">
+            <h3>Điểm chi tiết từng lớp tín chỉ</h3>
+            <label for="courseSelect">Chọn lớp tín chỉ:</label>
+            <select id="courseSelect"></select>
+            <button class="main-btn" id="viewClassBtn">Xem</button>
+            <div id="classDetails" class="table-block"></div>
+        </div>
+    </div>
+    <script src="../js/student.js"></script>
+</body>
+</html>
+
