@@ -1,0 +1,47 @@
+# Ignore Python compiled files and cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore venv/virtualenv
+venv/
+env/
+
+# IDE/editor config
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS junk files
+.DS_Store
+Thumbs.db
+
+# Env/config not for commit
+.env
+*.env
+db.py
+
+# If backend sinh ra các log file, csv export...
+*.log
+*.csv
+
+# Ignore frontend node_modules
+node_modules/
+
+# Ignore results of testing
+htmlcov/
+.coverage
+coverage.xml
+
+# Ignore test output
+test-results/
+
+# Ignore backup files
+*~
+*.bak
+
+# Ignore migrations
+migrations/
+

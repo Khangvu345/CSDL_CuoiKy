@@ -5,7 +5,7 @@ def get_db():
     connection = pymysql.connect(
         host="localhost",
         user="root",
-        password="YOUR_PASSWORD",
+        password="HocSQL@155@",
         database="testCSDL",
         cursorclass=pymysql.cursors.DictCursor,
         charset="utf8mb4",
