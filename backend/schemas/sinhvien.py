@@ -28,3 +28,31 @@ class SinhVienUpdate(BaseModel):
 class SinhVien(SinhVienBase):
     MaSV: str
 
+class SinhVienLopTC(BaseModel):
+    MaLopTC: str
+    TenMH: str
+    TenKy: str
+
+class DiemThanhPhan(BaseModel):
+    DiemChuyenCan: Optional[float]
+    DiemGiuaKy: Optional[float]
+    DiemCuoiKy: Optional[float]
+    DiemThucHanh: Optional[float]
+    DiemTongKetHe10: Optional[float]
+    DiemTongKetHe4: Optional[float]
+    DiemChu: Optional[str]
+    TrangThaiQuaMon: Optional[str]
+
+class DiemMonHocSinhVien(DiemThanhPhan):
+    MaMH: str
+    TenMH: str
+    SoTinChi: int
+
+class DiemTongKetKy(BaseModel):
+    MaKy: str
+    TenKy: str
+    DiemTBKyHe10: Optional[float]
+    DiemTBKyHe4: Optional[float]
+    DiemTBKyChu: Optional[str]
+    SoTCDatKy: Optional[int]
+    XepLoaiHocLucKy: Optional[str]

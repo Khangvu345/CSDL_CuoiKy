@@ -1,0 +1,100 @@
+def get_teacher_classes(db, ma_gv: str):
+    with db.cursor() as cursor:
+        cursor.execute("""
+            SELECT ltc.MaLopTC, mh.TenMH, kh.TenKy
+            FROM LopTC ltc
+            JOIN MonHoc mh ON ltc.MaMH = mh.MaMH
+            JOIN KyHoc kh ON ltc.MaKy = kh.MaKy
+            WHERE ltc.MaGV = %s
+        """, (ma_gv,))
+        return cursor.fetchall()
+
+def get_students_in_class(db, ma_loptc: str):
+    with db.cursor() as cursor:
+        cursor.execute("""
+            SELECT sv.MaSV, sv.HoTen, bd.DiemChuyenCan, bd.DiemGiuaKy, bd.DiemCuoiKy,
+                   bd.DiemThucHanh, bd.DiemTongKetHe10, bd.DiemChu, bd.TrangThaiQuaMon
+            FROM BangDiem bd
+            JOIN SinhVien sv ON bd.MaSV = sv.MaSV
+            WHERE bd.MaLopTC = %s
+        """, (ma_loptc,))
+        return cursor.fetchall()
+
+def update_student_grade(db, ma_loptc: str, ma_sv: str, diem_data: dict):
+    """
+    Cập nhật điểm thành phần. Nếu muốn có DiemTongKetHe10, DiemChu, DiemTongKetHe4, TrangThaiQuaMon
+    thì phải tính toán ở đây rồi UPDATE luôn 4 trường đó.
+    """
+    # Nếu muốn tính động điểm tổng kết:
+    with db.cursor() as cursor:
+        # Lấy hệ số từ MonHoc/LopTC nếu cần tính động
+        cursor.execute("""
+            SELECT mh.HeSoChuyenCan, mh.HeSoGiuaKy, mh.HeSoCuoiKy, mh.HeSoThucHanh
+            FROM LopTC ltc JOIN MonHoc mh ON ltc.MaMH = mh.MaMH
+            WHERE ltc.MaLopTC = %s
+        """, (ma_loptc,))
+        coeffs = cursor.fetchone()
+        if not coeffs:
+            raise Exception("Không tìm thấy hệ số môn học!")
+
+        tong_he_so = sum([
+            coeffs.get("HeSoChuyenCan") or 0,
+            coeffs.get("HeSoGiuaKy") or 0,
+            coeffs.get("HeSoCuoiKy") or 0,
+            coeffs.get("HeSoThucHanh") or 0,
+        ])
+        diem_tong_ket = 0
+        if tong_he_so > 0:
+            diem_tong_ket = (
+                (diem_data.get("DiemChuyenCan", 0) or 0) * (coeffs.get("HeSoChuyenCan") or 0) +
+                (diem_data.get("DiemGiuaKy", 0) or 0) * (coeffs.get("HeSoGiuaKy") or 0) +
+                (diem_data.get("DiemCuoiKy", 0) or 0) * (coeffs.get("HeSoCuoiKy") or 0) +
+                (diem_data.get("DiemThucHanh", 0) or 0) * (coeffs.get("HeSoThucHanh") or 0)
+            ) / tong_he_so
+            diem_tong_ket = round(diem_tong_ket, 1)
+        # Chuyển sang hệ 4 & điểm chữ
+        if diem_tong_ket >= 9.0:
+            diem_chu, diem_4 = 'A+', 4.0
+        elif diem_tong_ket >= 8.5:
+            diem_chu, diem_4 = 'A', 3.7
+        elif diem_tong_ket >= 8.0:
+            diem_chu, diem_4 = 'B+', 3.5
+        elif diem_tong_ket >= 7.0:
+            diem_chu, diem_4 = 'B', 3.0
+        elif diem_tong_ket >= 6.5:
+            diem_chu, diem_4 = 'C+', 2.5
+        elif diem_tong_ket >= 5.5:
+            diem_chu, diem_4 = 'C', 2.0
+        elif diem_tong_ket >= 5.0:
+            diem_chu, diem_4 = 'D+', 1.5
+        elif diem_tong_ket >= 4.0:
+            diem_chu, diem_4 = 'D', 1.0
+        else:
+            diem_chu, diem_4 = 'F', 0.0
+        trang_thai = 'Đạt' if diem_tong_ket >= 4.0 else 'Trượt'
+
+        # UPDATE tất cả
+        cursor.execute("""
+            UPDATE BangDiem
+            SET DiemChuyenCan=%s, DiemGiuaKy=%s, DiemCuoiKy=%s, DiemThucHanh=%s,
+                DiemTongKetHe10=%s, DiemTongKetHe4=%s, DiemChu=%s, TrangThaiQuaMon=%s
+            WHERE MaSV=%s AND MaLopTC=%s
+        """, (
+            diem_data.get("DiemChuyenCan"),
+            diem_data.get("DiemGiuaKy"),
+            diem_data.get("DiemCuoiKy"),
+            diem_data.get("DiemThucHanh"),
+            diem_tong_ket, diem_4, diem_chu, trang_thai,
+            ma_sv, ma_loptc
+        ))
+        db.commit()
+    return {"status": "success"}
+
+def delete_student_grade(db, ma_loptc: str, ma_sv: str):
+    with db.cursor() as cursor:
+        cursor.execute(
+            "DELETE FROM BangDiem WHERE MaSV=%s AND MaLopTC=%s",
+            (ma_sv, ma_loptc)
+        )
+        db.commit()
+    return {"status": "deleted"}

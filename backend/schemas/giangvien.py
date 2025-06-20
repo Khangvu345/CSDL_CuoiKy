@@ -24,3 +24,24 @@ class GiangVienUpdate(BaseModel):
 class GiangVien(GiangVienBase):
     MaGV: str
 
+class LopTinChiGV(BaseModel):
+    MaLopTC: str
+    TenMH: str
+    TenKy: str
+
+class SinhVienTrongLopTC(BaseModel):
+    MaSV: str
+    HoTen: str
+    DiemChuyenCan: Optional[float]
+    DiemGiuaKy: Optional[float]
+    DiemCuoiKy: Optional[float]
+    DiemThucHanh: Optional[float]
+    DiemTongKetHe10: Optional[float]
+    DiemChu: Optional[str]
+    TrangThaiQuaMon: Optional[str]
+
+class DiemUpdateRequest(BaseModel):
+    DiemChuyenCan: Optional[float]
+    DiemGiuaKy: Optional[float]
+    DiemCuoiKy: Optional[float]
+    DiemThucHanh: Optional[float]
